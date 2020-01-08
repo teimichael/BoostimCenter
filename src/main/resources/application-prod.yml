@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql-socket:3306/boostim?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=CTT&allowPublicKeyRetrieval=true
+    username: root
+    password: mysql
+
+authserver:
+  url: http://web-auth:9000
+
+appserver:
+  url: http://localhost:63343
+
+webserver:
+  url: http://localhost:8080

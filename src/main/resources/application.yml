@@ -1,0 +1,11 @@
+server:
+  port: 9010
+
+spring:
+  profiles:
+    active: @spring.active@
+  jpa:
+    database: mysql
+#    show-sql: true
+    hibernate:
+      ddl-auto: update

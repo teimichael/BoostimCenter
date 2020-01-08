@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Websocket Client Test</title>
+    <link href="./css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/main.css" rel="stylesheet">
+    <script src="./js/jquery/jquery-3.4.1.min.js"></script>
+    <script src="./js/sockjs/sockjs.min.js"></script>
+    <script src="./js/stomp/stomp.min.js"></script>
+    <script src="./js/main.js"></script>
+</head>
+<body>
+<noscript>
+    <h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+        enabled. Please enable
+        Javascript and reload this page!</h2>
+</noscript>
+<p>Use <a href="http://localhost:9010/swagger-ui.html#/access-controller/registerUsingPOST">Register</a> for
+    registration.</p>
+<p>Use <a href="http://localhost:9010/swagger-ui.html#/group-controller/createUsingPOST">CreateGroup</a> for
+    group creating.</p>
+<p>Fill target uuid for private conversation and group id for group conversation.</p>
+<div id="main-content" class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" class="form-control" placeholder="">
+
+                    <label for="password">Password: </label>
+                    <input type="text" id="password" class="form-control" placeholder="">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <button id="connect" class="btn btn-primary" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-primary" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="my-uuid">My uuid: </label>
+            <input type="text" id="my-uuid" class="form-control" readonly>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="target-uuid">Target uuid: </label>
+            <input type="text" id="target-uuid" class="form-control" placeholder="">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" id="private-message" class="form-control" placeholder="Input private message...">
+                </div>
+                <button id="send-private" class="btn btn-primary" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <label for="group-uuid">Group uuid: </label>
+            <input type="text" id="group-uuid" class="form-control" placeholder="">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" id="group-message" class="form-control" placeholder="Input group message...">
+                </div>
+                <button id="send-group" class="btn btn-primary" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Conversation</th>
+                    <th>Timestamp</th>
+                </tr>
+                </thead>
+                <tbody id="record">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
