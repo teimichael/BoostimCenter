@@ -4,6 +4,7 @@ const CODE = {
 };
 
 const CENTER_SERVER = 'http://localhost:9510';
+const SOCKET_ENDPOINT = '/boostimsocket';
 
 const URL = {
     login: CENTER_SERVER + '/access/login',
@@ -80,7 +81,7 @@ function getNodeAddress() {
 }
 
 function connectNode() {
-    const socket = new SockJS(globalData.node.address);
+    const socket = new SockJS(globalData.node.address + SOCKET_ENDPOINT);
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function () {
