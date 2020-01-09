@@ -86,21 +86,6 @@ public class AccessController {
         Assert.notNull(authResponse, "Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, "Logout failed.");
 
-        // Logout socket
-        User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
-
-        // Release node
-        Node node = user.getNode();
-        if (node != null) {
-            node.setClientNumber(node.getClientNumber() - 1);
-        }
-        nodeService.update(node);
-        user.setNode(null);
-
-        // Release session
-        user.setSessionId(null);
-        userService.update(user);
-
         return Response.success("Logout successfully.");
     }
 }

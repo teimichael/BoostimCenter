@@ -39,8 +39,8 @@ public class WebSocketEventListener {
             Node node = user.getNode();
             if (node != null) {
                 node.setClientNumber(node.getClientNumber() - 1);
+                nodeService.update(node);
             }
-            nodeService.update(node);
             user.setNode(null);
             // Release session
             user.setSessionId(null);

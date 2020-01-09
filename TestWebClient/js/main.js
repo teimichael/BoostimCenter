@@ -7,6 +7,7 @@ const SERVER = 'http://localhost:9010';
 
 const URL = {
     login: SERVER + '/access/login',
+    logout: SERVER + '/access/logout',
     getNodeAddress: SERVER + '/node/get/best',
     connectNode: SERVER + '/node/connect'
 };
@@ -146,11 +147,30 @@ function subscribeChannel() {
 }
 
 function disconnect() {
+    logout();
     if (stompClient !== null) {
         stompClient.disconnect();
     }
     setConnected(false);
     console.log("Disconnected");
+}
+
+function logout() {
+    $.ajax({
+        type: "POST",
+        url: URL.logout,
+        dataType: 'json',
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", globalData.token);
+        },
+    }).done(function (data) {
+        if (data.code === CODE.success) {
+            console.log('Logout successfully.');
+        } else {
+            alert(data.message);
+        }
+    });
 }
 
 function sendPrivateMessage() {
@@ -169,16 +189,6 @@ function sendGroupMessage() {
         content: $("#group-message").val()
     };
     stompClient.send(SEND.groupChannel, {}, JSON.stringify(message));
-}
-
-function showRecord(message) {
-    const record = "<tr>" +
-        "<td>" + message.sender + "</td>" +
-        "<td>" + message.receiver + "</td>" +
-        "<td>" + message.content + "</td>" +
-        "<td>" + message.timestamp + "</td>" +
-        "</tr>";
-    $("#record").append(record);
 }
 
 $(function () {
@@ -208,4 +218,14 @@ function setConnected(connected) {
         $("#conversation").hide();
     }
     $("#record").html("");
+}
+
+function showRecord(message) {
+    const record = "<tr>" +
+        "<td>" + message.sender + "</td>" +
+        "<td>" + message.receiver + "</td>" +
+        "<td>" + message.content + "</td>" +
+        "<td>" + message.timestamp + "</td>" +
+        "</tr>";
+    $("#record").append(record);
 }
