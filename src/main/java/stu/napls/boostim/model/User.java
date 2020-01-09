@@ -24,6 +24,10 @@ public class User {
     @Column(name = "sessionId")
     private String sessionId;
 
+    @ManyToOne
+    @JoinColumn(name = "node")
+    private Node node;
+
     @Column(name = "unreadList")
     private String unreadList;
 

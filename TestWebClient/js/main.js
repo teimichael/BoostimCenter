@@ -5,9 +5,10 @@ const CODE = {
 
 const SERVER = 'http://localhost:9010';
 
-const GLOBAL = {
-    loginURL: SERVER + '/access/login',
-    socketURL: SERVER + '/boostim'
+const URL = {
+    login: SERVER + '/access/login',
+    getNodeAddress: SERVER + '/node/get/best',
+    connectNode: SERVER + '/node/connect'
 };
 
 const SUBSCRIBE = {
@@ -21,23 +22,64 @@ const SEND = {
     groupChannel: '/to/group/send'
 };
 
+let globalData = {
+    token: '',
+    node: {
+        id: '',
+        address: ''
+    }
+};
+
 let stompClient = null;
 
-function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
-    if (connected) {
-        $("#conversation").show();
-    } else {
-        $("#conversation").hide();
-    }
-    $("#record").html("");
+function connect() {
+    // Login by HTTP request to obtain token
+    const authLogin = {
+        username: $('#username').val(),
+        password: $('#password').val()
+    };
+    $.ajax({
+        type: "POST",
+        url: URL.login,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(authLogin),
+    }).done(function (data) {
+        if (data.code === CODE.success) {
+            globalData.token = data.data;
+            console.log('Login successfully with token:');
+            console.log(globalData.token);
+            getNodeAddress();
+        } else {
+            alert(data.message);
+        }
+    });
+
 }
 
-function connect() {
+function getNodeAddress() {
+    $.ajax({
+        type: "GET",
+        url: URL.getNodeAddress,
+        dataType: 'json',
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", globalData.token);
+        },
+    }).done(function (data) {
+        if (data.code === CODE.success) {
+            globalData.node = data.data;
+            console.log('Obtain node successfully:');
+            console.log(globalData.node);
+            connectNode();
+        } else {
+            alert(data.message);
+        }
+    });
+}
 
-
-    const socket = new SockJS(GLOBAL.socketURL);
+function connectNode() {
+    const socket = new SockJS(globalData.node.address);
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function () {
@@ -45,67 +87,61 @@ function connect() {
         const urlSlice = stompClient.ws._transport.url.split('/');
         const sessionId = urlSlice[urlSlice.length - 2];
 
-        // Login by HTTP
-        const loginParam = {
-            sessionId: sessionId,
-            authLogin: {
-                username: $('#username').val(),
-                password: $('#password').val()
-            }
-        };
+        // Connect the node
         $.ajax({
             type: "POST",
-            url: GLOBAL.loginURL,
+            url: URL.connectNode + '/' + globalData.node.id + '/' + sessionId,
             dataType: 'json',
             contentType: 'application/json',
-            data: JSON.stringify(loginParam),
-            success: function (data) {
-                if (data.code === CODE.success) {
-                    $('#my-uuid').val(data.data.uuid);
-                    setConnected(true);
-                    console.log('Connected');
-
-                    // Subscribe private chat channel
-                    stompClient.subscribe(SUBSCRIBE.privateChannel, function (data) {
-                        data = JSON.parse(data.body);
-                        if (data.code === CODE.success) {
-                            const message = data.data;
-                            showRecord(message)
-                        } else {
-                            alert(data.message)
-                        }
-                    });
-
-                    // Subscribe group chat channel
-                    stompClient.subscribe(SUBSCRIBE.groupChannel, function (data) {
-                        data = JSON.parse(data.body);
-                        if (data.code === CODE.success) {
-                            const message = data.data;
-                            showRecord(message)
-                        } else {
-                            alert(data.message)
-                        }
-                    });
-
-                    // Subscribe notify channel
-                    stompClient.subscribe(SUBSCRIBE.notifyChannel, function (data) {
-                        data = JSON.parse(data.body);
-                        if (data.code === CODE.success) {
-                            const message = data.data;
-                            showRecord(message)
-                        } else {
-                            alert(data.message)
-                        }
-                    });
-
-                } else {
-                    alert(data.message);
-                    disconnect();
-                }
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", globalData.token);
+            },
+        }).done(function (data) {
+            if (data.code === CODE.success) {
+                $('#my-uuid').val(data.data.uuid);
+                setConnected(true);
+                console.log('Connected');
+                subscribeChannel();
+            } else {
+                alert(data.message);
+                disconnect();
             }
-
         });
+    });
+}
 
+function subscribeChannel() {
+    // Subscribe private chat channel
+    stompClient.subscribe(SUBSCRIBE.privateChannel, function (data) {
+        data = JSON.parse(data.body);
+        if (data.code === CODE.success) {
+            const message = data.data;
+            showRecord(message)
+        } else {
+            alert(data.message)
+        }
+    });
+
+    // Subscribe group chat channel
+    stompClient.subscribe(SUBSCRIBE.groupChannel, function (data) {
+        data = JSON.parse(data.body);
+        if (data.code === CODE.success) {
+            const message = data.data;
+            showRecord(message)
+        } else {
+            alert(data.message)
+        }
+    });
+
+    // Subscribe notify channel
+    stompClient.subscribe(SUBSCRIBE.notifyChannel, function (data) {
+        data = JSON.parse(data.body);
+        if (data.code === CODE.success) {
+            const message = data.data;
+            showRecord(message)
+        } else {
+            alert(data.message)
+        }
     });
 }
 
@@ -162,3 +198,14 @@ $(function () {
         sendGroupMessage();
     });
 });
+
+function setConnected(connected) {
+    $("#connect").prop("disabled", connected);
+    $("#disconnect").prop("disabled", !connected);
+    if (connected) {
+        $("#conversation").show();
+    } else {
+        $("#conversation").hide();
+    }
+    $("#record").html("");
+}

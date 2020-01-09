@@ -1,5 +1,6 @@
 package stu.napls.boostim.service.impl;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import stu.napls.boostim.model.Message;
 import stu.napls.boostim.repository.MessageRepository;
@@ -15,8 +16,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public List<Message> findByConversationUuid(String conversationUuid) {
-        return messageRepository.findByConversationUuid(conversationUuid);
+    public List<Message> findByConversationUuidOrderByTimestamp(String conversationUuid, Pageable pageable) {
+        return messageRepository.findByConversationUuidOrderByTimestamp(conversationUuid, pageable);
     }
 
     @Override

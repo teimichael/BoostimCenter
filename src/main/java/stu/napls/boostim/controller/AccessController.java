@@ -3,12 +3,12 @@ package stu.napls.boostim.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 import stu.napls.boostim.auth.annotation.Auth;
 import stu.napls.boostim.auth.model.*;
 import stu.napls.boostim.auth.request.AuthRequest;
@@ -16,9 +16,10 @@ import stu.napls.boostim.core.dictionary.ResponseCode;
 import stu.napls.boostim.core.dictionary.StatusCode;
 import stu.napls.boostim.core.exception.Assert;
 import stu.napls.boostim.core.response.Response;
+import stu.napls.boostim.model.Node;
 import stu.napls.boostim.model.User;
-import stu.napls.boostim.model.vo.LoginVO;
 import stu.napls.boostim.model.vo.RegisterVO;
+import stu.napls.boostim.service.NodeService;
 import stu.napls.boostim.service.UserService;
 
 import javax.annotation.Resource;
@@ -36,28 +37,18 @@ public class AccessController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private NodeService nodeService;
+
     @PostMapping("/login")
     @ResponseBody
-    public Response login(@RequestBody LoginVO loginVO) {
-        // Obtain token
-        AuthResponse authResponse = authRequest.login(loginVO.getAuthLogin());
+    public Response login(@RequestBody AuthLogin authLogin) {
+        AuthResponse authResponse = authRequest.login(authLogin);
+
         Assert.notNull(authResponse, "Authentication failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
 
-        // Obtain UUID
-        AuthVerify authVerify = new AuthVerify();
-        authVerify.setToken(authResponse.getData().toString());
-        authResponse = authRequest.verify(authVerify);
-        Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
-
-        User user = userService.findUserByUuid(authResponse.getData().toString());
-        Assert.notNull(user, HttpStatus.UNAUTHORIZED.value(), "User does not exist.");
-
-        // Update session
-        user.setSessionId(loginVO.getSessionId());
-        userService.update(user);
-
-        return Response.success("Login successfully.", user);
+        return Response.success("Login successfully.", authResponse.getData());
     }
 
     @PostMapping("/register")
@@ -87,7 +78,7 @@ public class AccessController {
     @Auth
     @PostMapping("/logout")
     @ResponseBody
-    public Response logout(HttpSession session) {
+    public Response logout(@ApiIgnore HttpSession session) {
         // Logout auth
         AuthLogout authLogout = new AuthLogout();
         authLogout.setUuid(session.getAttribute("uuid").toString());
@@ -97,8 +88,16 @@ public class AccessController {
 
         // Logout socket
         User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
-        Assert.notNull(user,"Logout failed.");
-        // Set session to null
+
+        // Release node
+        Node node = user.getNode();
+        if (node != null) {
+            node.setClientNumber(node.getClientNumber() - 1);
+        }
+        nodeService.update(node);
+        user.setNode(null);
+
+        // Release session
         user.setSessionId(null);
         userService.update(user);
 
