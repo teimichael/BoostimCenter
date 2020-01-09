@@ -3,13 +3,13 @@ const CODE = {
     failure: -1
 };
 
-const SERVER = 'http://localhost:9010';
+const CENTER_SERVER = 'http://localhost:9510';
 
 const URL = {
-    login: SERVER + '/access/login',
-    logout: SERVER + '/access/logout',
-    getNodeAddress: SERVER + '/node/get/best',
-    connectNode: SERVER + '/node/connect'
+    login: CENTER_SERVER + '/access/login',
+    logout: CENTER_SERVER + '/access/logout',
+    getNodeAddress: CENTER_SERVER + '/node/get/best',
+    connectNode: CENTER_SERVER + '/node/connect'
 };
 
 const SUBSCRIBE = {
