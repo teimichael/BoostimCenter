@@ -8,7 +8,7 @@ authserver:
   url: http://web-auth:9000
 
 appserver:
-  url: http://localhost:63343
+  url: "*"
 
 webserver:
   url: http://localhost:8080
