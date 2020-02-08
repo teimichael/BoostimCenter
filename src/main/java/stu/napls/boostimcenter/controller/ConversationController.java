@@ -34,7 +34,7 @@ public class ConversationController {
                     required = true, dataType = "string", paramType = "header")})
     @Auth
     @GetMapping("/get/list/{userUuid}")
-    private Response getListByUser(@ApiIgnore HttpSession session) {
+    public Response getListByUser(@ApiIgnore HttpSession session) {
         User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
         Assert.notNull(user, "User does not exist.");
         List<Conversation> conversations = conversationService.findByUserUuid(user.getUuid());
@@ -47,7 +47,7 @@ public class ConversationController {
                     required = true, dataType = "string", paramType = "header")})
     @Auth
     @PostMapping("/clear/unread")
-    private Response clearUnread(@RequestParam String conversationUuid, @ApiIgnore HttpSession session) {
+    public Response clearUnread(@RequestParam String conversationUuid, @ApiIgnore HttpSession session) {
         User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
         Assert.notNull(user, "User does not exist.");
         user.setUnreadList(ChatUtil.getNewUnreadList(user.getUnreadList(), conversationUuid, ChatUtil.UNREAD_CLEAR));

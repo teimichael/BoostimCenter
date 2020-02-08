@@ -36,7 +36,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "page", value = "Page number starting from 0", dataType = "string", paramType = "query")
     })
     @GetMapping("/get/{conversationUuid}")
-    private Response getByConversation(@PathVariable("conversationUuid") String conversationUuid, @ApiIgnore Pageable pageable, @ApiIgnore HttpSession session) {
+    public Response getByConversation(@PathVariable("conversationUuid") String conversationUuid, @ApiIgnore Pageable pageable, @ApiIgnore HttpSession session) {
         Conversation conversation = conversationService.findByUuid(conversationUuid);
         Assert.notNull(conversation, "Conversation does not exist.");
         Assert.isTrue(conversation.getUsers().contains(session.getAttribute("uuid").toString()),"Illegal authorization.");
