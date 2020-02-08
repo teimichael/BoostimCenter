@@ -1,6 +1,8 @@
 package stu.napls.boostimcenter.controller;
 
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -74,6 +76,9 @@ public class AccessController {
         return Response.success("Register successfully");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header")})
     @Auth
     @PostMapping("/logout")
     @ResponseBody
