@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+import stu.napls.boostimcenter.auth.annotation.Auth;
 import stu.napls.boostimcenter.core.exception.Assert;
 import stu.napls.boostimcenter.core.response.Response;
 import stu.napls.boostimcenter.model.Conversation;
@@ -35,6 +36,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "size", value = "Size of a page", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "page", value = "Page number starting from 0", dataType = "string", paramType = "query")
     })
+    @Auth
     @GetMapping("/get/{conversationUuid}")
     public Response getByConversation(@PathVariable("conversationUuid") String conversationUuid, @ApiIgnore Pageable pageable, @ApiIgnore HttpSession session) {
         Conversation conversation = conversationService.findByUuid(conversationUuid);
