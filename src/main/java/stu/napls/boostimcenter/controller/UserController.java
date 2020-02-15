@@ -47,7 +47,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "Authorization token",
                     required = true, dataType = "string", paramType = "header")})
     @Auth
-    @GetMapping("/update/avatar")
+    @PostMapping("/update/avatar")
     public Response updateAvatar(String avatar, @ApiIgnore HttpSession session) {
         User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
         Assert.notNull(user, "User does not exist.");
