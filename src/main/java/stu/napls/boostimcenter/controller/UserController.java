@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import stu.napls.boostimcenter.auth.annotation.Auth;
 import stu.napls.boostimcenter.core.exception.Assert;
@@ -46,4 +43,15 @@ public class UserController {
         return Response.success(user);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header")})
+    @Auth
+    @GetMapping("/update/avatar")
+    public Response updateAvatar(String avatar, @ApiIgnore HttpSession session) {
+        User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
+        Assert.notNull(user, "User does not exist.");
+        user.setAvatar(avatar);
+        return Response.success(userService.update(user));
+    }
 }
