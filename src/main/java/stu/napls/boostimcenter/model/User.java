@@ -21,6 +21,9 @@ public class User {
     @Column(name = "uuid", nullable = false, unique = true)
     private String uuid;
 
+    @Column(name = "thirdId")
+    private String thirdId;
+
     @Column(name = "sessionId")
     private String sessionId;
 
@@ -30,6 +33,9 @@ public class User {
 
     @Column(name = "unreadList")
     private String unreadList;
+
+    @Column(name = "avatar")
+    private String avatar;
 
     @Column(name = "createDate")
     @CreatedDate

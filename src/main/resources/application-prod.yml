@@ -5,7 +5,7 @@ spring:
     password: boostim#data
 
 authserver:
-  url: http://web-auth:9000
+  url: http://web-boostimauth:9000
 
 appserver:
   url: "*"

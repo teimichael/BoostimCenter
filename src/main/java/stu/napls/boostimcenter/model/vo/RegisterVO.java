@@ -9,4 +9,8 @@ public class RegisterVO {
 
     private String password;
 
+    private String thirdId;
+
+    private String avatar;
+
 }
