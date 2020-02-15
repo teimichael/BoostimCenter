@@ -9,7 +9,7 @@ public class RegisterVO {
 
     private String password;
 
-    private String thirdId;
+    private String uuid;
 
     private String avatar;
 

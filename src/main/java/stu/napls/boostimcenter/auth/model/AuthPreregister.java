@@ -8,4 +8,6 @@ public class AuthPreregister {
     private String username;
 
     private String password;
+
+    private String uuid;
 }

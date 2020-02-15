@@ -58,6 +58,7 @@ public class AccessController {
         AuthPreregister authPreregister = new AuthPreregister();
         authPreregister.setUsername(registerVO.getUsername());
         authPreregister.setPassword(registerVO.getPassword());
+        authPreregister.setUuid(registerVO.getUuid());
         AuthResponse authResponse = authRequest.preregister(authPreregister);
         Assert.notNull(authResponse, "Preregistering auth server failed.");
         Assert.isTrue(authResponse.getCode() == ResponseCode.SUCCESS, authResponse.getMessage());
@@ -65,6 +66,7 @@ public class AccessController {
 
         User user = new User();
         user.setUuid(uuid);
+        user.setAvatar(registerVO.getAvatar());
         user.setStatus(StatusCode.NORMAL);
         userService.update(user);
 
@@ -81,7 +83,6 @@ public class AccessController {
                     required = true, dataType = "string", paramType = "header")})
     @Auth
     @PostMapping("/logout")
-    @ResponseBody
     public Response logout(@ApiIgnore HttpSession session) {
         // Logout auth
         AuthLogout authLogout = new AuthLogout();
