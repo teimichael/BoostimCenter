@@ -32,6 +32,11 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
+    public Conversation findByUuidAndType(String uuid, int type) {
+        return conversationRepository.findByUuidAndType(uuid, type);
+    }
+
+    @Override
     public List<Conversation> findByUserUuid(String uuid) {
         return conversationRepository.findByUsersContaining(uuid);
     }

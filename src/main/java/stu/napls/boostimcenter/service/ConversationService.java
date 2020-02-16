@@ -10,6 +10,8 @@ public interface ConversationService {
 
     Conversation findByUuid(String uuid);
 
+    Conversation findByUuidAndType(String uuid, int type);
+
     List<Conversation> findByUserUuid(String uuid);
 
     Conversation findPrivateByUserUuids(String uuid0, String uuid1);
