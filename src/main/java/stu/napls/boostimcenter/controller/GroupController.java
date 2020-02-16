@@ -51,7 +51,7 @@ public class GroupController {
         Assert.notNull(user, "User does not exist.");
         Assert.isTrue(!conversation.getUsers().contains(user.getUuid()), "User has joined this group.");
 
-        conversation.setUsers(conversation.getUsers() + user.getUuid() + ",");
+        conversation.setUsers(conversation.getUsers() + user.getUuid() + ConversationConst.SPLITTER);
         return Response.success("Join successfully.", conversationService.update(conversation));
     }
 
@@ -66,7 +66,7 @@ public class GroupController {
         User user = userService.findUserByUuid(session.getAttribute("uuid").toString());
         Assert.notNull(user, "User does not exist.");
         Assert.isTrue(conversation.getUsers().contains(user.getUuid()), "User is not in this group.");
-        conversation.setUsers(conversation.getUsers().replace(user.getUuid() + ",", ""));
+        conversation.setUsers(conversation.getUsers().replace(user.getUuid() + ConversationConst.SPLITTER, ""));
         return Response.success("Leave successfully.", conversationService.update(conversation));
     }
 
