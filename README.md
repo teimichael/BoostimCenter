@@ -21,7 +21,7 @@ java -jar *
 ```
 
 ### Information
-- **Default port**: 9000
+- **Default port**: 9500
 - **API Doc**: /swagger-ui.html
 
 ## Related Repositories
