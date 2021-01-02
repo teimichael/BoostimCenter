@@ -118,6 +118,7 @@ function subscribeChannel() {
         data = JSON.parse(data.body);
         if (data.code === CODE.success) {
             const message = data.data;
+            console.log("private");
             showRecord(message)
         } else {
             alert(data.message)
@@ -129,7 +130,8 @@ function subscribeChannel() {
         data = JSON.parse(data.body);
         if (data.code === CODE.success) {
             const message = data.data;
-            showRecord(message)
+            console.log("group");
+            showRecord(message);
         } else {
             alert(data.message)
         }
@@ -140,7 +142,7 @@ function subscribeChannel() {
         data = JSON.parse(data.body);
         if (data.code === CODE.success) {
             const message = data.data;
-            showRecord(message)
+            showRecord(message);
         } else {
             alert(data.message)
         }
